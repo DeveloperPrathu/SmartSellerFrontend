@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_seller_frontend/constants.dart';
 import 'package:smart_seller_frontend/registration/authentication/auth_cubit.dart';
+import 'package:smart_seller_frontend/registration/forgot_password/forgot_password_cubit.dart';
 import 'package:smart_seller_frontend/registration/forgot_password/forgot_password_screen.dart';
 import 'package:smart_seller_frontend/registration/login/login_cubit.dart';
 import 'package:smart_seller_frontend/registration/login/login_state.dart';
@@ -42,7 +43,7 @@ class LoginScreen extends StatelessWidget {
                     Align(
                       alignment: Alignment.centerLeft,
                       child: TextButton(onPressed:state is LoginSubmitting ? null : (){
-                        Navigator.of(context).push(MaterialPageRoute(builder: (_)=>ForgotPasswordScreen()));
+                        Navigator.of(context).push(MaterialPageRoute(builder: (_)=>BlocProvider<ForgotPasswordCubit>(create: (_)=>ForgotPasswordCubit(),child: ForgotPasswordScreen())));
                       }, child: Text('Forgot Password?')),
                     ),
                     SizedBox(height: 24,),
