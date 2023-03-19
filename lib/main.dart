@@ -10,11 +10,13 @@ import 'package:smart_seller_frontend/registration/authentication/authenticating
 import 'package:smart_seller_frontend/registration/sign_up/signup_cubit.dart';
 import 'package:smart_seller_frontend/registration/sign_up/signup_screen.dart';
 
-final AuthRespository authRepository = AuthRespository();
+final AuthRepository authRepository = AuthRepository();
 final storage = FlutterSecureStorage();
-final AuthCubit authCubit = AuthCubit(storage: storage, authRespository: authRepository);
+final AuthCubit authCubit = AuthCubit(storage: storage, authRepository: authRepository);
 
 void main() async {
+
+  WidgetsFlutterBinding.ensureInitialized();
 
   if(authCubit.state is AuthInitial){
     await authCubit.authenticate();
@@ -23,7 +25,7 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   // This widget is the root of your application.
   @override

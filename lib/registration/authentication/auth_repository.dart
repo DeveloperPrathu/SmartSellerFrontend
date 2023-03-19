@@ -6,7 +6,7 @@ import 'package:dio/dio.dart';
 
 import '../../constants.dart';
 
-class AuthRespository {
+class AuthRepository {
 
   final Dio dio = Dio();
 

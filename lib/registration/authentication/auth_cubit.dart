@@ -8,24 +8,25 @@ class AuthCubit extends Cubit<AuthState> {
 
   static String token = '';
 
-  AuthRespository authRespository;
+  AuthRepository authRepository;
   final FlutterSecureStorage storage;
 
-  AuthCubit({required this.storage, required this.authRespository}) : super(AuthInitial());
+  AuthCubit({required this.storage, required this.authRepository}) : super(AuthInitial());
 
   Future<AuthState> authenticate() async {
     AuthState newsState;
     if(token.isEmpty){
       try{
-        var tokenvalue = await _getToken();
-        if(tokenvalue == null){
+        var tokenValue = await _getToken();
+        if(tokenValue == null){
           newsState = LoggedOut();
           emit(newsState);
         }else{
-          token = tokenvalue;
+          token = tokenValue;
           newsState = await _fetchUserData();
         }
       }catch(e){
+        print(e);
         newsState = LoggedOut();
         emit(newsState);
       }
@@ -38,7 +39,7 @@ class AuthCubit extends Cubit<AuthState> {
   Future<AuthState> _fetchUserData() async {
     AuthState newState;
     try{
-      var response = await authRespository.getUserData(token: token);
+      var response = await authRepository.getUserData(token: token);
       newState = Authenticated();
       emit(newState);
     }catch(value){
@@ -59,6 +60,13 @@ class AuthCubit extends Cubit<AuthState> {
     }
 
     return newState;
+  }
+
+  void loggedIn(String tokenValue){
+    emit(Authenticating());
+    token = tokenValue;
+    _setToken(token)
+    .then((value) => _fetchUserData());
   }
 
   Future<AuthState> removeToken() async {

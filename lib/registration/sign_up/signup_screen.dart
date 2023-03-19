@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_seller_frontend/constants.dart';
+import 'package:smart_seller_frontend/registration/login/login_cubit.dart';
+import 'package:smart_seller_frontend/registration/otp/otp_cubit.dart';
 import 'package:smart_seller_frontend/registration/otp/otp_screen.dart';
 import 'package:smart_seller_frontend/registration/sign_up/signup_cubit.dart';
 import 'package:smart_seller_frontend/registration/sign_up/signup_state.dart';
@@ -30,9 +32,11 @@ class SignUpScreen extends StatelessWidget {
               child: BlocConsumer<SignUpCubit, SignUpState>(
                 listener: (context, state){
                   if(state is SignUpSuccess){
-                    Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => OtpScreen())
-                    );
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => BlocProvider<OtpCubit>(
+                            create: (_) => OtpCubit(),
+                            child: OtpScreen(_email, _phone, _name, _password))));
+
                   }
                   if(state is SignUpFailed){
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message),backgroundColor: Colors.red,));
@@ -65,7 +69,7 @@ class SignUpScreen extends StatelessWidget {
                         ),
                         elevation: MaterialStateProperty.all(0),
                         fixedSize: MaterialStateProperty.all(Size(double.maxFinite, 50))
-                        
+
                       ), onPressed: (state is SignUpSubmitting)?null:(){
                         if(formkey.currentState!.validate()){
                           BlocProvider.of<SignUpCubit>(context).requestOtp(_email, _phone);
@@ -77,7 +81,7 @@ class SignUpScreen extends StatelessWidget {
                       ),
                       TextButton(onPressed: (){
                         Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context)=>LoginScreen())
+                          MaterialPageRoute(builder: (context)=>BlocProvider<LoginCubit>(create:(_)=>LoginCubit(),child: LoginScreen()))
                         );
                       }, child: Text('Allready have an account? Login'))
                     ],
@@ -95,7 +99,7 @@ class SignUpScreen extends StatelessWidget {
     return TextFormField(
       enabled: enableForm,
       validator: (value){
-        if(!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value!)){
+        if(!RegExp(EMAIL_REGEX).hasMatch(value!)){
           return "Please enter a valid email address";
         }
         _email = value;
