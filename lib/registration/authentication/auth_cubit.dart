@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:smart_seller_frontend/models/user_model.dart';
 import 'package:smart_seller_frontend/registration/authentication/auth_repository.dart';
 import 'package:smart_seller_frontend/registration/authentication/auth_state.dart';
 
@@ -40,7 +41,7 @@ class AuthCubit extends Cubit<AuthState> {
     AuthState newState;
     try{
       var response = await authRepository.getUserData(token: token);
-      newState = Authenticated();
+      newState = Authenticated(UserModel.fromJson(response.data));
       emit(newState);
     }catch(value){
       DioError error = value as DioError;
